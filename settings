@@ -1,0 +1,71 @@
+#!/bin/sh
+
+printf "[INFO]: setting up global preferences...\n"
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain AppleAccentColor 5
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+defaults write -g ApplePressAndHoldEnabled -bool false
+defaults write NSGlobalDomain AppleShowAllExtensions -bool false
+defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+defaults write NSGlobalDomain com.apple.sound.beep.feedback -bool true
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+printf "[INFO]: setting up finder preferences...\n"
+defaults write com.apple.finder ShowPathbar -bool true
+defaults write com.apple.finder ShowRecentTags -bool false
+defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write com.apple.finder WarnOnEmptyTrash -bool false
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
+defaults write com.apple.finder SidebarPlacesSectionDisclosedState -bool true
+defaults write com.apple.finder SidebarSharedSectionDisclosedState -bool true
+defaults write com.apple.finder SidebarDevicesSectionDisclosedState -bool true
+defaults write com.apple.finder SidebarMediaBrowserSectionDisclosedState -bool true
+killall Finder
+
+printf "[INFO]: setting up safari preferences...\n"
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
+defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
+defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist 2> /dev/null
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
+
+printf "[INFO]: setting up dock preferences...\n"
+defaults write com.apple.dock tilesize -int 50
+defaults write com.apple.dock magnification -bool true
+defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock expose-group-apps -bool true
+defaults write com.apple.dock 'orientation' -string 'bottom'
+defaults write com.apple.dock expose-group-by-app -bool true
+defaults write com.apple.dock minimize-to-application -bool true
+
+printf "[INFO]: setting up screenshots preferences...\n"
+defaults write com.apple.screencapture type -string "png"
+defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+printf "[INFO]: setting up trackpad preferences...\n"
+defaults write NSGlobalDomain com.apple.trackpad.clickBehavior -int 1
+defaults write NSGlobalDomain com.apple.trackpad.forceClick -bool true
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool true
+defaults write com.apple.AppleMultitouchMouse MouseVerticalScroll -int 1
+defaults write com.apple.AppleMultitouchMouse MouseHorizontalScroll -int 1
+
+printf "[INFO]: setting up extra preferences...\n"
+defaults write com.apple.terminal StringEncodings -array 4
+echo "okaerinasai!! ₍₍◝(・ω・)⁾⁾" | sudo tee /etc/motd > /dev/null
+defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM HH:mm:ss a"
+defaults write com.apple.menuextra.clock FlashDateSeparators -bool false

@@ -1,0 +1,93 @@
+#!/bin/bash
+
+user=$(whoami)
+
+function check_for_brew() {
+    if [[ ! $(which brew) ]]; then
+        printf "[INFO]: installing brew...\n"
+        sudo xcode-select --install &> /dev/null
+        sudo xcodebuild -license accept
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+}
+
+function check_for_root() {
+    if [[ $user == "root" ]]; then
+        printf "[ERROR]: this script should not be executed as root.\n"
+        exit
+    fi
+}
+
+function check_for_darwin() {
+    if [[ $(uname) != "Darwin" ]]; then
+        printf "[ERROR]: this script can only be executed on a macOS system for the moment.\n"
+        exit
+    fi
+}
+
+function usage() {
+    printf "haiyuidesu's dotfiles, copyrights © haiyuidesu 2021.\n\n"
+    printf "  -h, --help     print this help,\n"
+    printf "  -s, --setup    setup a new macOS machine.\n"
+    exit
+}
+
+if [[ "$1" = "--help" || "$1" = "-h" ]]; then
+    usage
+elif [[ "$1" = "--setup" ||  "$1" = "-s" ]]; then
+    printf "[INFO]: starting...\n"
+
+    check_for_root
+
+    check_for_darwin
+
+    check_for_brew
+
+    printf "[INFO]: taping brew sources...\n"
+    brew tap homebrew/core &> /dev/null
+    brew tap hack-different/jailbreak &> /dev/null
+
+    printf "[INFO]: installing brew packages...\n"
+    cat ./packages/brewpkg | xargs brew install > /dev/null
+
+    printf "[INFO]: installing cask packages...\n"
+    cat ./packages/caskpkg | xargs brew install --cask > /dev/null
+
+    printf "[INFO]: installing App Store apps...\n"
+    cat ./packages/maspkg | xargs mas install > /dev/null
+
+    printf "[INFO]: setting up verbose boot...\n"
+    sudo nvram boot-args="-v"
+
+    printf "[INFO]: setting up settings...\n"
+    ./settings
+
+    printf "[INFO]: starting services...\n"
+    brew services start redis &> /dev/null
+    brew services start mariadb &> /dev/null
+
+    printf "[INFO]: installing oh-my-zsh...\n"
+    sudo ./scripts/zsh.sh
+
+    chsh -s $(which zsh) $user
+
+    printf "[INFO]: importing profiles...\n"
+    sudo find ./config -maxdepth 1 -type f -name ".*" -exec cp {} ~/ \; &> /dev/null
+
+    printf "[INFO]: importing aliases...\n"
+    cat ./config/zshrc >> ~/.zshrc
+
+    echo "[INFO]: downloading Arc browser..."
+    ./scripts/arc.sh
+
+    printf "[INFO]: installing python2 (for IDA 7.0)...\n"
+    ./scripts/pyinstall.sh
+
+    printf "[OK]: done!\n\n"
+
+    read -p "[INFO]: restarting now, please press the 'enter' key to proceed."
+
+    sudo shutdown -r now
+else
+    usage
+fi

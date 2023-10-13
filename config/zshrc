@@ -1,0 +1,7 @@
+alias rmds="sudo find . -name ".DS_Store" -delete"
+alias fmake="make -j$(expr $(sysctl -n hw.physicalcpu) / 2)" # useful for cpp projects
+alias lsa="exa -l --sort=type --icons --group-directories-first"
+alias glog="git log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\' --all"
+
+alias ida="/Applications/IDA/ida.app/Contents/MacOS/ida"
+alias ida64="/Applications/IDA/ida.app/Contents/MacOS/ida64"
